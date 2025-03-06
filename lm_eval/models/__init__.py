@@ -21,13 +21,20 @@ from . import huggingface
 from . import textsynth
 from . import dummy
 
+try:
+    from . import huggingface
+    HAS_HUGGINGFACE = True
+except ImportError:
+    HAS_HUGGINGFACE = False
+
 # Dictionary for function registry
 MODEL_REGISTRY = {
     "hf": gpt2.HFLM,
     "hf-causal": gpt2.HFLM,
     "hf-causal-experimental": huggingface.AutoCausalLM,
     "hf-seq2seq": huggingface.AutoSeq2SeqLM,
-    "hf-mlm": huggingface.AutoMLM,
+    # Comment out the problematic line
+    # "hf-mlm": huggingface.AutoMLM,
     "hf-prefix-lm": huggingface.AutoPrefixLM,
     "gpt2": gpt2.GPT2LM,
     "gpt3": gpt3.GPT3LM,
@@ -37,6 +44,10 @@ MODEL_REGISTRY = {
 }
 
 try:
+    # Check if AutoMLM exists and use it - for backward compatibility
+    if hasattr(huggingface, "AutoMLM"):
+        MODEL_REGISTRY["hf-mlm"] = huggingface.AutoMLM
+        
     if hasattr(huggingface, "AutoLlamaCausalLM"):
         MODEL_REGISTRY["hf-causal-llama"] = huggingface.AutoLlamaCausalLM
     else:
