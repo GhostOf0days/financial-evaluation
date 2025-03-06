@@ -33,9 +33,9 @@ MODEL_REGISTRY = {
     "hf-causal": gpt2.HFLM,
     "hf-causal-experimental": huggingface.AutoCausalLM,
     "hf-seq2seq": huggingface.AutoSeq2SeqLM,
-    # Comment out the problematic line
+    # Comment out the problematic lines
     # "hf-mlm": huggingface.AutoMLM,
-    "hf-prefix-lm": huggingface.AutoPrefixLM,
+    # "hf-prefix-lm": huggingface.AutoPrefixLM,
     "gpt2": gpt2.GPT2LM,
     "gpt3": gpt3.GPT3LM,
     "anthropic": anthropic_llms.AnthropicLM,
@@ -47,6 +47,10 @@ try:
     # Check if AutoMLM exists and use it - for backward compatibility
     if hasattr(huggingface, "AutoMLM"):
         MODEL_REGISTRY["hf-mlm"] = huggingface.AutoMLM
+    
+    # Check if AutoPrefixLM exists and use it - for backward compatibility
+    if hasattr(huggingface, "AutoPrefixLM"):
+        MODEL_REGISTRY["hf-prefix-lm"] = huggingface.AutoPrefixLM
         
     if hasattr(huggingface, "AutoLlamaCausalLM"):
         MODEL_REGISTRY["hf-causal-llama"] = huggingface.AutoLlamaCausalLM
